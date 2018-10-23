@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ ! -f settings.sh ]; then
+  echo "create settings.sh"
+  exit -1
+fi
+
 . settings.sh
 
 docker rmi $IMGNAME
@@ -34,17 +39,20 @@ fi
 # fi
 
 # and then get the IdP metadata
-if [ ! -e metadata/idcs.xml ]; then
+if [ ! -f metadata/idcs.xml ]; then
   which idcs > /dev/null
   if [ $? == 0 ]; then
+    echo "Attempting to download metadata automatically"
     idcs saml metadata > metadata/idcs.xml
   fi
+  # ls -l metadata
 
-  if [ ! -e metadata/idcs.xml ]; then
+  if [ ! -f metadata/idcs.xml ]; then
     echo "Download the IDCS SAML metadata and put it in metadata/idcs.xml"
   fi
 fi
 
+# check to make sure the metadata is "clean"
 xmllint metadata/idcs.xml > /dev/null
 if [ $? != 0 ]; then
   echo "IDCS Metadata (metadata/idp.xml) does not appear to be well formatted XML."
@@ -53,6 +61,7 @@ if [ $? != 0 ]; then
 fi
 
 # Create the app with the CLI
+idcs app setactive -name="$IDCS_APPNAME" -active=false
 idcs app delete -name="${IDCS_APPNAME}"
 
 idcs app create -name="${IDCS_APPNAME}" \
@@ -63,6 +72,7 @@ idcs app create -name="${IDCS_APPNAME}" \
   -SAMLSignatureHashAlgorithm=SHA-1 \
   -SAMLLogoutEnabled=true
 
+idcs app setactive -name="$IDCS_APPNAME" -active=true
 
 docker build -t $IMGNAME .
 #docker tag $IMGNAME $IMGNAME:1

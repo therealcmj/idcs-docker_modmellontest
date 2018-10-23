@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ ! -f settings.sh ]; then
+  echo "create settings.sh"
+  exit -1
+fi
+
 . settings.sh
 
 # set -x
