@@ -74,5 +74,7 @@ idcs app create -name="${IDCS_APPNAME}" \
 
 idcs app setactive -name="$IDCS_APPNAME" -active=true
 
+idcs app group grant -app="$IDCS_APPNAME" -group="All Tenant Users"
+
 docker build -t $IMGNAME .
 #docker tag $IMGNAME $IMGNAME:1
