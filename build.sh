@@ -12,7 +12,8 @@ docker rmi $IMGNAME
 # only create the metadata if we don't have it already
 if [ ! -e metadata/${IDCS_APPNAME}.xml ]; then
   if [ ! -e mellon_create_metadata.sh ]; then
-    wget https://raw.githubusercontent.com/UNINETT/mod_auth_mellon/master/mellon_create_metadata.sh
+    wget https://raw.githubusercontent.com/latchset/mod_auth_mellon/main/mellon_create_metadata.sh
+    #wget https://raw.githubusercontent.com/UNINETT/mod_auth_mellon/master/mellon_create_metadata.sh
   fi
   chmod u+x mellon_create_metadata.sh
 
